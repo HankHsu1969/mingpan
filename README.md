@@ -1,2 +1,2 @@
 命盤 
-API KEY 在外面
+Gemini API KEY 在外面
