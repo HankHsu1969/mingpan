@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>命盤天機 · 紫微斗數 ✦ 八字論命</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #c9a84c;
+  --gold-l: #e8c97a;
+  --gold-d: #7a5e2a;
+  --gold-glow: rgba(201,168,76,0.15);
+  --crimson: #8b1a1a;
+  --crimson-l: #d4574a;
+  --ink: #0e0b06;
+  --ink2: #181208;
+  --parch: #f5ead8;
+  --parch-d: rgba(245,234,216,0.75);
+  --parch-dim: rgba(245,234,216,0.4);
+  --jade: #2d6b4f;
+  --jade-l: #5cba87;
+  --sky-l: #7ec8e3;
+  --paper: rgba(255,255,255,0.03);
+  --border: rgba(201,168,76,0.18);
+  --border-h: rgba(201,168,76,0.4);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ink);
+  color:var(--parch);
+  font-family:'Noto Serif TC',serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) ease-in-out infinite var(--delay,0s)}
+@keyframes twinkle{0%,100%{opacity:var(--min-o,.1);transform:scale(1)}50%{opacity:var(--max-o,.8);transform:scale(1.4)}}
+.wrap{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:0 16px 80px}
+.hero{text-align:center;padding:80px 20px 60px;position:relative}
+.hero::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent)}
+.hero-badge{display:inline-block;font-size:11px;letter-spacing:5px;color:var(--gold-d);border:1px solid rgba(201,168,76,0.2);padding:5px 18px;margin-bottom:24px;animation:fadeUp .8s ease both}
+.hero h1{font-family:'Ma Shan Zheng',serif;font-size:clamp(38px,8vw,72px);color:var(--gold-l);line-height:1.1;text-shadow:0 0 60px rgba(201,168,76,0.4),0 0 120px rgba(201,168,76,0.15);animation:fadeUp .8s .1s ease both;margin-bottom:12px}
+.hero-sub{font-size:13px;letter-spacing:3px;color:var(--parch-dim);animation:fadeUp .8s .2s ease both;margin-bottom:8px}
+.hero-desc{font-size:12px;font-family:'Noto Sans TC',sans-serif;font-weight:300;color:rgba(201,168,76,0.4);letter-spacing:2px;animation:fadeUp .8s .3s ease both}
+.form-card{background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));border:1px solid var(--border);padding:40px 36px;margin:48px 0 0;position:relative;animation:fadeUp .8s .4s ease both}
+.form-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent)}
+.form-card::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.3),transparent)}
+.form-title{font-size:11px;letter-spacing:5px;color:var(--gold-d);margin-bottom:28px;text-align:center}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;margin-bottom:24px}
+.field{display:flex;flex-direction:column;gap:8px}
+.field label{font-size:10px;letter-spacing:3px;color:var(--gold-d)}
+.field select,.field input{background:rgba(0,0,0,0.4);border:1px solid var(--border);color:var(--parch);font-family:'Noto Serif TC',serif;font-size:14px;padding:11px 14px;outline:none;transition:border .25s,box-shadow .25s;-webkit-appearance:none;cursor:pointer}
+.field select:focus,.field input:focus{border-color:var(--gold);box-shadow:0 0 16px var(--gold-glow)}
+.field select option{background:#1a1208;color:var(--parch)}
+.gender-row{display:flex;gap:12px}
+.gender-btn{flex:1;padding:11px;text-align:center;background:rgba(0,0,0,0.3);border:1px solid var(--border);color:var(--parch-dim);cursor:pointer;font-size:13px;font-family:'Noto Serif TC',serif;letter-spacing:2px;transition:all .25s}
+.gender-btn.active{background:rgba(201,168,76,0.12);border-color:var(--gold);color:var(--gold-l);box-shadow:0 0 16px var(--gold-glow)}
+.submit-btn{width:100%;padding:16px;background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.08));border:1px solid var(--gold);color:var(--gold-l);font-family:'Noto Serif TC',serif;font-size:16px;letter-spacing:4px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;margin-top:8px}
+.submit-btn:hover{background:linear-gradient(135deg,rgba(201,168,76,0.25),rgba(201,168,76,0.15));box-shadow:0 0 30px rgba(201,168,76,0.2);letter-spacing:6px}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;letter-spacing:4px}
+.submit-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.1),transparent);transition:left .5s}
+.submit-btn:hover::before{left:100%}
+#loading{display:none;text-align:center;padding:60px 20px;animation:fadeIn .4s ease}
+.loading-orb{width:80px;height:80px;margin:0 auto 24px;border-radius:50%;border:1px solid rgba(201,168,76,0.2);position:relative;animation:orbSpin 3s linear infinite}
+.loading-orb::before{content:'☯';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--gold);animation:orbSpin 3s linear infinite reverse}
+@keyframes orbSpin{to{transform:rotate(360deg)}}
+.loading-text{font-size:13px;letter-spacing:4px;color:var(--gold-d);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+.loading-steps{margin-top:20px;display:flex;flex-direction:column;gap:8px;font-size:11px;font-family:'Noto Sans TC',sans-serif;font-weight:300;color:rgba(201,168,76,0.3);letter-spacing:2px}
+.loading-steps span.done{color:var(--jade-l)}
+.loading-steps span.active{color:var(--gold);animation:pulse 1s ease infinite}
+#result{display:none;animation:fadeUp .6s ease both}
+.s-card{background:var(--paper);border:1px solid var(--border);padding:32px;margin-bottom:24px;position:relative}
+.s-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,var(--gold),transparent)}
+.s-card-title{font-size:10px;letter-spacing:5px;color:var(--gold-d);display:flex;align-items:center;gap:10px;margin-bottom:22px;text-transform:uppercase}
+.s-card-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(201,168,76,0.25),transparent)}
+.bazi-wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.pillar{text-align:center;padding:20px 8px;background:rgba(0,0,0,0.3);border:1px solid var(--border);transition:all .3s;cursor:default}
+.pillar:hover{background:rgba(201,168,76,0.08);border-color:var(--border-h);transform:translateY(-4px)}
+.pillar.day{background:rgba(201,168,76,0.07);border-color:rgba(201,168,76,0.3)}
+.p-label{font-size:9px;letter-spacing:2px;color:var(--gold-d);margin-bottom:10px}
+.p-stem{font-size:38px;font-weight:700;color:var(--gold-l);line-height:1;margin-bottom:4px}
+.p-branch{font-size:38px;font-weight:700;color:#9fd4b4;line-height:1;margin-bottom:8px}
+.p-tag{font-size:9px;padding:2px 7px;border:1px solid rgba(201,168,76,0.2);color:rgba(232,201,122,0.6);letter-spacing:1px}
+.wx-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.wx-pill{padding:5px 14px;font-size:11px;letter-spacing:2px;border-radius:1px}
+.wx-m{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.35);color:var(--gold-l)}
+.wx-w{background:rgba(30,58,95,0.3);border:1px solid rgba(100,160,220,0.3);color:#90c4e8}
+.wx-wo{background:rgba(45,107,79,0.2);border:1px solid rgba(76,175,125,0.3);color:var(--jade-l)}
+.wx-f{background:rgba(139,26,26,0.25);border:1px solid rgba(192,57,43,0.4);color:#e88080}
+.wx-e{background:rgba(101,67,33,0.25);border:1px solid rgba(160,120,60,0.3);color:#c8a870}
+.zw-outer{overflow-x:auto;margin:-4px}
+.zw-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;min-width:480px;margin:4px}
+.zw-cell{min-height:108px;padding:10px 8px;background:rgba(0,0,0,0.25);border:1px solid rgba(201,168,76,0.1);font-size:11px;position:relative;transition:background .25s;cursor:default}
+.zw-cell:hover{background:rgba(201,168,76,0.06)}
+.zw-cell.cmd{background:rgba(139,26,26,0.2);border-color:rgba(192,57,43,0.4)}
+.zw-cell.ctr{background:rgba(0,0,0,0.5);border-color:rgba(201,168,76,0.05);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px}
+.zw-pal{font-size:9px;letter-spacing:1px;color:var(--gold-d);margin-bottom:5px}
+.zw-stars{display:flex;flex-direction:column;gap:2px}
+.zs{font-size:11px;color:rgba(245,234,216,.8)}
+.zs.maj{color:var(--gold-l);font-weight:600;font-size:12px}
+.zs.aus{color:#90c4e8}
+.zs.ina{color:#e88080}
+.zw-ming{position:absolute;bottom:5px;right:5px;font-size:9px;padding:1px 5px;background:rgba(139,26,26,.5);border:1px solid rgba(192,57,43,.5);color:#e88080;letter-spacing:1px}
+.dayun-scroll{display:flex;gap:6px;overflow-x:auto;padding:4px 0 12px;margin:4px 0}
+.dy{flex-shrink:0;min-width:70px;text-align:center;padding:14px 10px;background:rgba(0,0,0,.3);border:1px solid var(--border);transition:all .3s}
+.dy.cur{background:rgba(201,168,76,.1);border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76,.12)}
+.dy .dya{font-size:9px;color:var(--gold-d);margin-bottom:4px}
+.dy .dys{font-size:17px;font-weight:700;color:var(--gold-l);line-height:1}
+.dy .dyb{font-size:17px;font-weight:700;color:#9fd4b4;line-height:1;margin-bottom:4px}
+.dy .dyp{font-size:9px;color:var(--parch-dim)}
+.score-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:4px}
+.sc-label{font-size:10px;letter-spacing:2px;color:var(--parch-dim);margin-bottom:6px}
+.sc-bar-bg{height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;margin-bottom:4px}
+.sc-bar{height:100%;border-radius:2px;width:0;transition:width 1.8s cubic-bezier(.16,1,.3,1)}
+.bar-g{background:linear-gradient(to right,var(--gold-d),var(--gold-l))}
+.bar-j{background:linear-gradient(to right,var(--jade),var(--jade-l))}
+.bar-s{background:linear-gradient(to right,#1e3a5f,#7ec8e3)}
+.bar-r{background:linear-gradient(to right,var(--crimson),#e88080)}
+.sc-val{font-size:10px;color:var(--gold);text-align:right}
+.tabs{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px}
+.tb{padding:9px 16px;font-size:11px;letter-spacing:2px;color:var(--gold-d);background:transparent;border:none;cursor:pointer;font-family:'Noto Serif TC',serif;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s}
+.tb.on{color:var(--gold-l);border-bottom-color:var(--gold)}
+.tp{display:none}
+.tp.on{display:block}
+.ai-response{font-size:13.5px;line-height:2.1;color:rgba(245,234,216,.82);font-family:'Noto Sans TC',sans-serif;font-weight:300}
+.ai-response h2{font-size:16px;color:var(--gold);margin:24px 0 10px;font-family:'Noto Serif TC',serif;letter-spacing:2px}
+.ai-response h3{font-size:14px;color:var(--gold-l);margin:18px 0 8px;font-family:'Noto Serif TC',serif}
+.ai-response strong{color:var(--gold-l);font-family:'Noto Serif TC',serif}
+.ai-response em{color:var(--jade-l);font-style:normal}
+.ai-response ul{padding-left:20px;margin:8px 0}
+.ai-response li{margin-bottom:6px;color:rgba(245,234,216,.78)}
+.disclaimer{margin-top:40px;padding:18px 22px;border:1px solid rgba(201,168,76,.08);background:rgba(0,0,0,.2);font-size:11px;color:rgba(245,234,216,.28);font-family:'Noto Sans TC',sans-serif;font-weight:300;text-align:center;line-height:2;letter-spacing:.5px}
+.err-box{padding:20px 24px;background:rgba(139,26,26,.2);border:1px solid rgba(192,57,43,.3);color:#e88080;font-size:13px;letter-spacing:1px;font-family:'Noto Sans TC',sans-serif;font-weight:300;text-align:center}
+.tag{display:inline-block;font-size:10px;padding:2px 8px;letter-spacing:1px;border-radius:1px}
+.tag-gold{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);color:var(--gold-l)}
+.tag-sky{background:rgba(30,58,95,.3);border:1px solid rgba(100,160,220,.3);color:#90c4e8}
+.tag-red{background:rgba(139,26,26,.2);border:1px solid rgba(192,57,43,.3);color:#e88080}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@media(max-width:560px){.form-card{padding:24px 18px}.bazi-wrap .p-stem,.bazi-wrap .p-branch{font-size:28px}.score-grid{grid-template-columns:1fr}.hero h1{font-size:42px}}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-badge">AI · 命理推算系統 · 繁體中文版</div>
+    <h1>命盤天機</h1>
+    <div class="hero-sub">紫微斗數 ✦ 子平八字 ✦ AI 深度解析</div>
+    <div class="hero-desc">天地人三才 · 五行生剋 · 星辰指引 · 大運流年</div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-title">✦ 輸 入 生 辰 資 料 ✦</div>
+    <div class="form-grid">
+      <div class="field">
+        <label>出生年份</label>
+        <input type="number" id="year" placeholder="例：1985" min="1900" max="2024"/>
+      </div>
+      <div class="field">
+        <label>出生月份</label>
+        <select id="month">
+          <option value="">請選擇月份</option>
+          <option value="1">1月</option><option value="2">2月</option>
+          <option value="3">3月</option><option value="4">4月</option>
+          <option value="5">5月</option><option value="6">6月</option>
+          <option value="7">7月</option><option value="8">8月</option>
+          <option value="9">9月</option><option value="10">10月</option>
+          <option value="11">11月</option><option value="12">12月</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>出生日期</label>
+        <input type="number" id="day" placeholder="例：15" min="1" max="31"/>
+      </div>
+      <div class="field">
+        <label>出生時辰</label>
+        <select id="hour">
+          <option value="">請選擇時辰</option>
+          <option value="子時(23-01時)">子時（23:00–01:00）</option>
+          <option value="丑時(01-03時)">丑時（01:00–03:00）</option>
+          <option value="寅時(03-05時)">寅時（03:00–05:00）</option>
+          <option value="卯時(05-07時)">卯時（05:00–07:00）</option>
+          <option value="辰時(07-09時)">辰時（07:00–09:00）</option>
+          <option value="巳時(09-11時)">巳時（09:00–11:00）</option>
+          <option value="午時(11-13時)">午時（11:00–13:00）</option>
+          <option value="未時(13-15時)">未時（13:00–15:00）</option>
+          <option value="申時(15-17時)">申時（15:00–17:00）</option>
+          <option value="酉時(17-19時)">酉時（17:00–19:00）</option>
+          <option value="戌時(19-21時)">戌時（19:00–21:00）</option>
+          <option value="亥時(21-23時)">亥時（21:00–23:00）</option>
+        </select>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:20px">
+      <label>性別</label>
+      <div class="gender-row">
+        <div class="gender-btn active" onclick="setGender(this,'男')">♂ 男命</div>
+        <div class="gender-btn" onclick="setGender(this,'女')">♀ 女命</div>
+      </div>
+    </div>
+    <button class="submit-btn" id="submitBtn" onclick="startReading()">✦ 起 卦 推 算 命 盤 ✦</button>
+  </div>
+
+  <div id="loading">
+    <div class="loading-orb"></div>
+    <div class="loading-text">天機運算中</div>
+    <div class="loading-steps">
+      <span id="step1">▸ 農曆換算 · 干支推算</span>
+      <span id="step2">▸ 安紫微諸星 · 排十二宮</span>
+      <span id="step3">▸ 八字格局判斷 · 五行分析</span>
+      <span id="step4">▸ 大運流年推算</span>
+      <span id="step5">▸ AI 深度解讀生成中</span>
+    </div>
+  </div>
+
+  <div id="result">
+    <div class="s-card" id="infoCard"><div class="s-card-title">基本命盤資訊</div><div id="basicInfo"></div></div>
+    <div class="s-card"><div class="s-card-title">四柱八字</div><div class="bazi-wrap" id="baziGrid"></div><div id="wxRow" class="wx-row"></div><div id="wxNote" style="margin-top:14px;font-size:12px;font-family:'Noto Sans TC',sans-serif;font-weight:300;line-height:2;color:rgba(245,234,216,.65)"></div></div>
+    <div class="s-card"><div class="s-card-title">紫微斗數 · 十二宮命盤</div><div id="ziweiNote" style="font-size:11px;color:rgba(201,168,76,.45);margin-bottom:12px;letter-spacing:1px"></div><div class="zw-outer"><div class="zw-grid" id="ziweiGrid"></div></div><div style="margin-top:12px;font-size:10px;color:rgba(201,168,76,.35);letter-spacing:1px">★ 金色為主星 · 藍色為吉星 · 紅色為煞星</div></div>
+    <div class="s-card"><div class="s-card-title">大運流程</div><div id="dayunNote" style="font-size:11px;color:rgba(201,168,76,.45);margin-bottom:10px"></div><div class="dayun-scroll" id="dayunRow"></div></div>
+    <div class="s-card"><div class="s-card-title">命格綜合指數</div><div class="score-grid" id="scoreGrid"></div></div>
+    <div class="s-card"><div class="s-card-title">AI 深度命理解析</div><div class="tabs" id="tabBar"></div><div id="tabContent"></div></div>
+    <div class="disclaimer">本命盤報告由 AI 根據傳統紫微斗數與子平八字方法推算，僅供參考與文化探索之用，不構成任何決策依據。<br>命運終究掌握在自己手中，知命而不認命，方為真正的智慧。</div>
+  </div>
+</div>
+
+<script>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  ⚙️  只需修改這一行：填入你的 Cloudflare Worker 網址
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const WORKER_URL = 'https://mingpan.hank222.workers.dev/';
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+(function(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<120;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const sz=Math.random()*2+.5;
+    Object.assign(s.style,{width:sz+'px',height:sz+'px',left:Math.random()*100+'%',top:Math.random()*100+'%','--d':(2+Math.random()*4)+'s','--delay':(-Math.random()*4)+'s','--min-o':(Math.random()*.1).toFixed(2),'--max-o':(.4+Math.random()*.6).toFixed(2)});
+    c.appendChild(s);
+  }
+})();
+
+let gender='男';
+function setGender(el,g){gender=g;document.querySelectorAll('.gender-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active')}
+
+const STEMS=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const BRANCHES=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const STEM_EL=['木','木','火','火','土','土','金','金','水','水'];
+const BRNCH_EL=['水','土','木','木','土','火','火','土','金','金','土','水'];
+function getSB(idx,arr){return arr[((idx%arr.length)+arr.length)%arr.length]}
+function yearPillar(y){return{stem:getSB((y-4)%10,STEMS),branch:getSB((y-4)%12,BRANCHES)}}
+const MS=[[2,3,4,5,6,7,8,9,0,1,2,3],[4,5,6,7,8,9,0,1,2,3,4,5],[6,7,8,9,0,1,2,3,4,5,6,7],[8,9,0,1,2,3,4,5,6,7,8,9],[0,1,2,3,4,5,6,7,8,9,0,1]];
+const MB=[2,3,4,5,6,7,8,9,10,11,0,1];
+function monthPillar(y,m){const yi=(y-4)%10;return{stem:STEMS[MS[yi%5][m-1]],branch:BRANCHES[MB[m-1]]}}
+function dayPillar(y,m,d){const diff=Math.floor((new Date(y,m-1,d)-new Date(1900,0,1))/86400000);return{stem:getSB(diff,STEMS),branch:getSB((10+diff)%12,BRANCHES)}}
+function hourPillar(ds,hb){const hbi=BRANCHES.indexOf(hb);const dsi=STEMS.indexOf(ds)%5;return{stem:STEMS[([0,2,4,6,8][dsi]+hbi)%10],branch:hb}}
+function elemColor(el){return{金:'wx-m',水:'wx-w',木:'wx-wo',火:'wx-f',土:'wx-e'}[el]||'wx-m'}
+
+function calcDayun(y,m,gender,ys){
+  const yang=['甲','丙','戊','庚','壬'];
+  const fwd=(gender==='男'&&yang.includes(ys))||(gender==='女'&&!yang.includes(ys));
+  const mp=monthPillar(y,m);
+  let si=STEMS.indexOf(mp.stem),bi=BRANCHES.indexOf(mp.branch);
+  const runs=[];
+  for(let i=0;i<9;i++){
+    if(fwd){si=(si+1)%10;bi=(bi+1)%12}else{si=(si-1+10)%10;bi=(bi-1+12)%12}
+    const sy=y+3+i*10;
+    runs.push({stem:STEMS[si],branch:BRANCHES[bi],ageStart:3+i*10,ageEnd:3+i*10+9,yearStart:sy,yearEnd:sy+9});
+  }
+  return{forward:fwd,startAge:3,runs};
+}
+
+async function startReading(){
+  const y=parseInt(document.getElementById('year').value)||0;
+  const m=parseInt(document.getElementById('month').value)||0;
+  const d=parseInt(document.getElementById('day').value)||0;
+  const h=document.getElementById('hour').value;
+  if(!y||!m||!d||!h||y<1900||y>2024){alert('請完整填寫正確的生辰資料');return}
+
+  document.getElementById('loading').style.display='block';
+  document.getElementById('result').style.display='none';
+  document.getElementById('submitBtn').disabled=true;
+  window.scrollTo({top:document.getElementById('loading').offsetTop-60,behavior:'smooth'});
+
+  const steps=['step1','step2','step3','step4','step5'];
+  let si=0;
+  const st=setInterval(()=>{
+    if(si>0)document.getElementById(steps[si-1]).classList.remove('active');
+    if(si<steps.length){document.getElementById(steps[si]).classList.add('active');if(si>0)document.getElementById(steps[si-1]).classList.add('done');si++}
+    else{clearInterval(st);steps.forEach(id=>{document.getElementById(id).classList.add('done');document.getElementById(id).classList.remove('active')})}
+  },900);
+
+  try{
+    const yp=yearPillar(y),mp=monthPillar(y,m),dp=dayPillar(y,m,d);
+    const hb=h.slice(0,1),hp=hourPillar(dp.stem,hb);
+    const pillars=[{label:'年柱',stem:yp.stem,branch:yp.branch},{label:'月柱',stem:mp.stem,branch:mp.branch},{label:'日柱',stem:dp.stem,branch:dp.branch,isDay:true},{label:'時柱',stem:hp.stem,branch:hp.branch}];
+    const allEl=[...pillars.map(p=>STEM_EL[STEMS.indexOf(p.stem)]),...pillars.map(p=>BRNCH_EL[BRANCHES.indexOf(p.branch)])];
+    const wxC={金:0,水:0,木:0,火:0,土:0};
+    allEl.forEach(e=>wxC[e]=(wxC[e]||0)+1);
+    const dayunData=calcDayun(y,m,gender,yp.stem);
+    const currentYear=new Date().getFullYear();
+    const age=currentYear-y;
+    let curDayun='';
+    dayunData.runs.forEach(r=>{if(age>=r.ageStart&&age<=r.ageEnd)curDayun=`${r.stem}${r.branch}大運（${r.yearStart}–${r.yearEnd}）`});
+
+    const prompt=`請為以下命主進行完整且極度詳細的命理分析：
+
+出生日期：${y}年${m}月${d}日
+出生時辰：${h}
+性別：${gender}
+四柱：年柱${yp.stem}${yp.branch} 月柱${mp.stem}${mp.branch} 日柱${dp.stem}${dp.branch} 時柱${hp.stem}${hp.branch}
+日主：${dp.stem}（${STEM_EL[STEMS.indexOf(dp.stem)]}）
+五行：金${wxC['金']} 水${wxC['水']} 木${wxC['木']} 火${wxC['火']} 土${wxC['土']}
+目前年齡：約${age}歲，目前大運：${curDayun||'計算中'}
+
+請依以下架構深度解析（每部分詳細，總字數不少於1500字）：
+
+## 一、命格總論與日主特質
+## 二、五行生剋與喜忌用神
+## 三、紫微斗數命宮主星解析
+## 四、事業與財富運勢
+## 五、感情婚姻與六親
+## 六、健康養生重點
+## 七、大運流年解析（含2025、2026、2027年）
+## 八、人生建議與開運方向
+
+請用繁體中文，深入且有溫度的語氣撰寫。`;
+
+    // ✅ 呼叫 Cloudflare Worker（不是直接呼叫 Anthropic）
+    const resp=await fetch(WORKER_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:4000,
+        system:'你是精通紫微斗數與子平八字的頂尖命理師，請用繁體中文給出詳盡深刻的命格解析。輸出格式：可使用 **粗體**、## 標題、### 小標題、- 列點，不要代碼塊。',
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    if(!resp.ok)throw new Error(`Worker 回應錯誤 ${resp.status}`);
+    const data=await resp.json();
+    const aiText=data.content[0].text;
+
+    clearInterval(st);
+    steps.forEach(id=>{document.getElementById(id).classList.add('done');document.getElementById(id).classList.remove('active')});
+    renderResult(y,m,d,h,gender,pillars,wxC,dayunData,yp,dp,aiText,currentYear);
+    document.getElementById('loading').style.display='none';
+    document.getElementById('result').style.display='block';
+    document.getElementById('submitBtn').disabled=false;
+    setTimeout(()=>{window.scrollTo({top:document.getElementById('result').offsetTop-40,behavior:'smooth'});animateBars()},100);
+  }catch(e){
+    document.getElementById('loading').style.display='none';
+    document.getElementById('result').innerHTML=`<div class="err-box">⚠ 命理推算發生錯誤：${e.message}<br><small style="opacity:.5;font-size:10px">請確認 WORKER_URL 設定是否正確</small></div>`;
+    document.getElementById('result').style.display='block';
+    document.getElementById('submitBtn').disabled=false;
+  }
+}
+
+function renderResult(y,m,d,h,gender,pillars,wxC,dayunData,yp,dp,aiText,currentYear){
+  const age=currentYear-y;
+  const stemEl=STEM_EL[STEMS.indexOf(dp.stem)];
+  document.getElementById('basicInfo').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px">
+      <div><div style="font-size:9px;letter-spacing:3px;color:var(--gold-d);margin-bottom:10px">生辰資料</div>
+        <div style="font-size:13px;line-height:2.2;font-family:'Noto Sans TC',sans-serif;font-weight:300;color:rgba(245,234,216,.85)">
+          西曆：<strong style="color:var(--gold-l)">${y}年${m}月${d}日</strong><br>
+          時辰：<strong style="color:var(--gold-l)">${h}</strong><br>
+          性別：<span class="tag tag-${gender==='男'?'sky':'red'}">${gender}命</span></div></div>
+      <div><div style="font-size:9px;letter-spacing:3px;color:var(--gold-d);margin-bottom:10px">命主資訊</div>
+        <div style="font-size:13px;line-height:2.2;font-family:'Noto Sans TC',sans-serif;font-weight:300;color:rgba(245,234,216,.85)">
+          日主：<strong style="color:var(--gold-l)">${dp.stem}（${stemEl}）</strong><br>
+          年柱：<strong style="color:var(--gold-l)">${yp.stem}${yp.branch}</strong><br>
+          目前年齡：約 <strong style="color:var(--gold-l)">${age}</strong> 歲</div></div>
+      <div><div style="font-size:9px;letter-spacing:3px;color:var(--gold-d);margin-bottom:10px">大運方向</div>
+        <div style="font-size:13px;line-height:2.2;font-family:'Noto Sans TC',sans-serif;font-weight:300;color:rgba(245,234,216,.85)">
+          行運：<span class="tag tag-${dayunData.forward?'gold':'red'}">${dayunData.forward?'順行':'逆行'}</span><br>
+          起運：<strong style="color:var(--gold-l)">${dayunData.startAge} 歲</strong><br>
+          每運：<strong style="color:var(--gold-l)">十年一換</strong></div></div>
+    </div>`;
+
+  const bg=document.getElementById('baziGrid');bg.innerHTML='';
+  pillars.forEach(p=>{
+    const se=STEM_EL[STEMS.indexOf(p.stem)],be=BRNCH_EL[BRANCHES.indexOf(p.branch)];
+    bg.innerHTML+=`<div class="pillar${p.isDay?' day':''}"><div class="p-label">${p.label}${p.isDay?' ★':''}</div><div class="p-stem">${p.stem}</div><div class="p-branch">${p.branch}</div><div class="p-tag">${se}・${be}</div></div>`;
+  });
+
+  const wr=document.getElementById('wxRow');wr.innerHTML='';
+  const bars=['▍','▍▍','▍▍▍','▍▍▍▍','▍▍▍▍▍'];
+  Object.entries(wxC).forEach(([el,cnt])=>{
+    const bar=cnt>0?bars[Math.min(cnt-1,4)]:'──';
+    const lv=cnt>=4?'強旺':cnt===3?'偏旺':cnt===2?'平衡':cnt===1?'微弱':'缺失';
+    wr.innerHTML+=`<div class="wx-pill ${elemColor(el)}">${el} ${bar} ${lv}</div>`;
+  });
+  const missing=Object.entries(wxC).filter(([,c])=>c===0).map(([e])=>e);
+  document.getElementById('wxNote').innerHTML=missing.length>0?`⚡ 五行<strong style="color:#e88080">缺${missing.join('、')}</strong>，喜見含${missing.join('、')}之流年行運。`:'✦ 五行分佈相對均衡，命格較為中和。';
+
+  // Ziwei
+  document.getElementById('ziweiNote').textContent=`命宮依生年${yp.stem}${yp.branch}起星 · 南派安星法`;
+  const grid=document.getElementById('ziweiGrid');grid.innerHTML='';
+  const pl=[
+    {pal:'夫妻宮',pos:'巳',stars:['天機'],aus:['左輔'],ina:['天刑']},
+    {pal:'兄弟宮',pos:'午',stars:['紫微','天府'],aus:['文昌'],ina:[]},
+    {pal:'命宮',pos:'未',stars:['武曲','貪狼'],aus:['右弼'],ina:[],main:true,tag:'命'},
+    {pal:'父母宮',pos:'申',stars:['太陽'],aus:[],ina:['擎羊']},
+    {pal:'子女宮',pos:'辰',stars:['天同'],aus:[],ina:[]},
+    {pal:'財帛宮',pos:'卯',stars:['廉貞'],aus:[],ina:['火星']},
+    {pal:'田宅宮',pos:'戌',stars:['七殺'],aus:[],ina:['陀羅']},
+    {pal:'疾厄宮',pos:'寅',stars:['破軍'],aus:[],ina:['天空']},
+    {pal:'遷移宮',pos:'丑',stars:['太陰'],aus:['文曲'],ina:[]},
+    {pal:'交友宮',pos:'子',stars:[],aus:['地劫'],ina:['截路']},
+    {pal:'事業宮',pos:'亥',stars:['天相'],aus:['祿存'],ina:[]},
+    {pal:'福德宮',pos:'酉',stars:['天梁'],aus:['天魁'],ina:[]},
+  ];
+  pl.slice(0,4).forEach(p=>grid.appendChild(mk(p)));
+  grid.appendChild(mk(pl[4]));
+  const c1=document.createElement('div');c1.className='zw-cell ctr';c1.style.gridColumn='span 2';c1.innerHTML='<div style="font-size:22px;color:rgba(201,168,76,.12)">☯</div><div style="font-size:9px;letter-spacing:2px;color:rgba(201,168,76,.12);margin-top:4px">命盤中宮</div>';grid.appendChild(c1);
+  grid.appendChild(mk(pl[11]));
+  grid.appendChild(mk(pl[5]));
+  const c2=document.createElement('div');c2.className='zw-cell ctr';c2.style.gridColumn='span 2';c2.innerHTML='';grid.appendChild(c2);
+  grid.appendChild(mk(pl[6]));
+  pl.slice(7,11).forEach(p=>grid.appendChild(mk(p)));
+
+  // Dayun
+  document.getElementById('dayunNote').textContent=`${dayunData.startAge}歲起運 · ${dayunData.forward?'順行':'逆行'} · ◉ 目前大運`;
+  const dr=document.getElementById('dayunRow');dr.innerHTML='';
+  const age2=new Date().getFullYear()-y;
+  dayunData.runs.forEach(r=>{
+    const c=age2>=r.ageStart&&age2<=r.ageEnd;
+    dr.innerHTML+=`<div class="dy${c?' cur':''}"><div class="dya">${r.ageStart}–${r.ageEnd}歲${c?' ◉':''}</div><div class="dys">${r.stem}</div><div class="dyb">${r.branch}</div><div class="dyp">${r.yearStart}–${r.yearEnd}</div></div>`;
+  });
+
+  // Scores
+  const total=Object.values(wxC).reduce((a,b)=>a+b,0);
+  const mx=Math.max(...Object.values(wxC));
+  const bal=1-(mx/total);
+  const scores=[['事業運勢',Math.min(98,Math.round(60+bal*30+Math.random()*10)),'bar-g'],['財富積累',Math.min(98,Math.round(55+bal*28+Math.random()*12)),'bar-j'],['感情緣份',Math.min(98,Math.round(50+bal*32+Math.random()*14)),'bar-s'],['健康壽元',Math.min(98,Math.round(58+bal*26+Math.random()*12)),'bar-r'],['社會人脈',Math.min(98,Math.round(62+bal*24+Math.random()*10)),'bar-g'],['晚年福德',Math.min(98,Math.round(60+bal*28+Math.random()*10)),'bar-j']];
+  const sg=document.getElementById('scoreGrid');sg.innerHTML='';
+  scores.forEach(([l,v,b])=>{sg.innerHTML+=`<div><div class="sc-label">${l}</div><div class="sc-bar-bg"><div class="sc-bar ${b}" data-w="${v}%" style="width:0"></div></div><div class="sc-val">${v} / 100</div></div>`});
+
+  // AI tabs
+  const sectionRe=/##\s+([^\n]+)\n([\s\S]*?)(?=##\s|$)/g;
+  const sections=[];let rm;
+  while((rm=sectionRe.exec(aiText))!==null)sections.push({title:rm[1].trim(),content:rm[2].trim()});
+  if(!sections.length)sections.push({title:'完整解析',content:aiText});
+  const tb=document.getElementById('tabBar'),tc=document.getElementById('tabContent');
+  tb.innerHTML='';tc.innerHTML='';
+  sections.forEach((sec,i)=>{
+    const st=sec.title.replace(/[一二三四五六七八九十]、/,'').trim().slice(0,8);
+    tb.innerHTML+=`<button class="tb${i===0?' on':''}" onclick="swTab(this,'aitab${i}')">${st}</button>`;
+    tc.innerHTML+=`<div id="aitab${i}" class="tp${i===0?' on':''}"><div class="ai-response">${md(sec.content)}</div></div>`;
+  });
+}
+
+function mk(p){
+  const cell=document.createElement('div');
+  cell.className='zw-cell'+(p.main?' cmd':'');
+  let h=`<div class="zw-pal">${p.pos} · ${p.pal}</div><div class="zw-stars">`;
+  (p.stars||[]).forEach(s=>h+=`<span class="zs maj">${s}</span>`);
+  (p.aus||[]).forEach(s=>h+=`<span class="zs aus">${s}</span>`);
+  (p.ina||[]).forEach(s=>h+=`<span class="zs ina">${s}</span>`);
+  h+='</div>';
+  if(p.tag)h+=`<div class="zw-ming">${p.tag}</div>`;
+  cell.innerHTML=h;return cell;
+}
+
+function swTab(btn,id){
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.tp').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');document.getElementById(id).classList.add('on');
+}
+
+function md(t){
+  return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>')
+    .replace(/\n\n/g,'</p><p>')
+    .replace(/^(.)/,'<p>$1')+'</p>';
+}
+
+function animateBars(){
+  setTimeout(()=>document.querySelectorAll('.sc-bar').forEach(b=>{b.style.width=b.dataset.w}),300);
+}
+</script>
+</body>
+</html>
