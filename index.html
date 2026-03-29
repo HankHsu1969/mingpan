@@ -651,7 +651,7 @@
 // ──────────────────────────────────────────────────
 // 部署 Cloudflare Worker 後，把 Worker 網址填進來
 // 例如：https://bazi-api.your-name.workers.dev
-const WORKER_URL = 'https://mingpan2.hank222.workers.dev';
+const WORKER_URL = 'https://mingpan2.hank222.workers.dev/';
 // ──────────────────────────────────────────────────
 
 let currentGender = 'male';
@@ -791,14 +791,25 @@ async function analyze() {
       body: JSON.stringify({ prompt })
     });
 
-    if (!res.ok) {
-      const txt = await res.text();
-      throw new Error(`Worker 回應錯誤 (${res.status}): ${txt}`);
+    const data = await res.json().catch(() => ({}));
+
+    // 429 配額耗盡 → 顯示友善說明
+    if (res.status === 429) {
+      const rawMsg = data.error || '';
+      throw new Error(rawMsg ||
+        '所有 Gemini 模型的免費配額今日已用完。\n請明天再試，或至 https://aistudio.google.com/ 開啟付費方案。');
     }
 
-    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || `Worker 回應錯誤 (${res.status})`);
+    }
+
     const text = data.result || data.text || '';
     if (!text) throw new Error('AI 未回傳內容，請稍後再試。');
+
+    if (data.model && data.model !== 'gemini-2.0-flash') {
+      console.info(`[命理館] 使用備援模型：${data.model}`);
+    }
 
     document.getElementById('loading').classList.remove('active');
     document.getElementById('result-section').classList.add('active');
@@ -809,7 +820,15 @@ async function analyze() {
 
   } catch (err) {
     document.getElementById('loading').classList.remove('active');
-    errBox.innerHTML = `⚠ ${err.message}<br><small style="opacity:0.7">請確認 Worker 網址已正確設定，且 Gemini API Key 有效。</small>`;
+    const is429 = err.message.includes('配額') || err.message.includes('quota') || err.message.includes('429');
+    const hint = is429
+      ? `<br><small style="opacity:0.8;line-height:1.8">
+          💡 <strong>解決方法：</strong><br>
+          ① 等到明天 UTC 0:00 配額自動重置<br>
+          ② 或至 <a href="https://aistudio.google.com/" target="_blank" style="color:#e8c06a">Google AI Studio</a> 開啟付費方案（Pay-as-you-go）
+        </small>`
+      : `<br><small style="opacity:0.7">請確認 Worker 網址已正確設定，且 Gemini API Key 有效。</small>`;
+    errBox.innerHTML = `⚠ ${err.message.replace(/\n/g, '<br>')}${hint}`;
     errBox.classList.add('active');
   }
 
